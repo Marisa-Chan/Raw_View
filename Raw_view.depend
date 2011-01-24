@@ -1,0 +1,35 @@
+# depslib dependency file v1.0
+1285839244 source:/home/marisa/work/Raw_view/main.cpp
+	<cstdlib>
+	<stdlib.h>
+	<SDL/SDL.h>
+	<SDL/SDL_gfxPrimitives.h>
+	<inttypes.h>
+	"System.h"
+
+1285749368 source:/home/marisa/work/Raw_view/System.cpp
+	<SDL/SDL.h>
+	<inttypes.h>
+	<time.h>
+
+1285749391 /home/marisa/work/Raw_view/System.h
+	<inttypes.h>
+	<SDL/SDL.h>
+
+1285749368 source:/home/zidane/Projects/Raw_view/System.cpp
+	<SDL/SDL.h>
+	<inttypes.h>
+	<time.h>
+
+1285867441 source:/home/zidane/Projects/Raw_view/main.cpp
+	<cstdlib>
+	<stdlib.h>
+	<SDL/SDL.h>
+	<SDL/SDL_gfxPrimitives.h>
+	<inttypes.h>
+	"System.h"
+
+1285749391 /home/zidane/Projects/Raw_view/System.h
+	<inttypes.h>
+	<SDL/SDL.h>
+
