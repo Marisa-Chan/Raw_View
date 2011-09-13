@@ -116,7 +116,7 @@ int main ( int argc, char** argv )
         stringColor(screen,700,20,buf,0xFFFFFFFF);
 
         rectangleColor(screen,663,7,670,509,0xFF0000FF);
-        FillRect(screen,665,9,4,501*(Offs/Max),0x00FF00);//rectangleColor(screen,664,8,669,8+500*Offs/Max,0x00FF00FF);
+        FillRect(screen,665,9,4,501*(Offs/(float)Max),0x00FF00);//rectangleColor(screen,664,8,669,8+500*Offs/Max,0x00FF00FF);
         if (WIDT>150)
         {
             rectangleColor(screen,9,549,511,556,0xFF0000FF); //Rect  9,549,502,7,0
@@ -230,7 +230,7 @@ int main ( int argc, char** argv )
 
             if (MouseX()>663 && MouseX()<670 && MouseY()>7 && MouseY()<507)
             {
-                Offs=Max*((MouseY()-8))/500.0;
+                Offs=(float)Max*((MouseY()-8.0))/500.0;
                 Render(buffer,rejim,WIDT,HIGH,DX);
             }
 
