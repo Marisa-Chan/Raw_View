@@ -20,6 +20,11 @@ int32_t HIGH   =100;
 int32_t rejim  =4;
 int32_t DX     =0;
 
+int8_t ofR = 0;
+int8_t ofG = 0;
+int8_t ofB = 0;
+int8_t ofA = 0;
+
 FILE *fl;
 
 
@@ -160,6 +165,42 @@ int main ( int argc, char** argv )
             break;
         case 12:
             sprintf(buf,"24 Bit mode BGR");
+            break;
+	case 13:
+	    sprintf(buf,"32 Bit mode RGB");
+            break;
+	case 14:
+	    sprintf(buf,"32 Bit mode BGR");
+            break;
+	case 20:
+	    sprintf(buf,"32 Bit mode RGBA");
+            break;
+	case 21:
+	    sprintf(buf,"32 Bit mode BGRA");
+            break;
+	case 22:
+	    sprintf(buf,"32 Bit mode ARGB");
+            break;
+	case 23:
+	    sprintf(buf,"32 Bit mode ABGR");
+            break;
+	case 24:
+	    sprintf(buf,"32 Bit mode GRAB");
+            break;
+	case 25:
+	    sprintf(buf,"32 Bit mode GBAR");
+            break;
+	case 26:
+	    sprintf(buf,"32 Bit mode RABG");
+            break;
+	case 27:
+	    sprintf(buf,"32 Bit mode BARG");
+            break;
+	case 28:
+	    sprintf(buf,"32 Bit mode R(%d) G(%d) B(%d) A(%d)", ofR, ofG, ofB, ofA);
+            break;
+	case 29:
+	    sprintf(buf,"32 RGB10_A2 Bit mode R(%d) G(%d) B(%d) A(%d)", ofR, ofG, ofB, ofA);
             break;
         }
 
@@ -318,15 +359,83 @@ int main ( int argc, char** argv )
             rejim=12;
             Render(buffer,rejim,WIDT,HIGH,DX);
         }
+	
+	if (KeyHit(SDLK_q))
+        {
+            rejim=20 + KeyDown(SDLK_LSHIFT) * 4;
+            Render(buffer,rejim,WIDT,HIGH,DX);
+        }
+	
+	if (KeyHit(SDLK_w))
+        {
+            rejim=21 + KeyDown(SDLK_LSHIFT) * 4;
+            Render(buffer,rejim,WIDT,HIGH,DX);
+        }
+	
+	if (KeyHit(SDLK_e))
+        {
+            rejim=22 + KeyDown(SDLK_LSHIFT) * 4;
+            Render(buffer,rejim,WIDT,HIGH,DX);
+        }
+	
+	if (KeyHit(SDLK_r))
+        {
+            rejim=23 + KeyDown(SDLK_LSHIFT) * 4;
+            Render(buffer,rejim,WIDT,HIGH,DX);
+        }
+	
+	if (KeyHit(SDLK_t))
+        {
+            rejim=28;
+            Render(buffer,rejim,WIDT,HIGH,DX);
+        }
+	
+	if (KeyHit(SDLK_y))
+        {
+            rejim=29;
+            Render(buffer,rejim,WIDT,HIGH,DX);
+        }
+	
+	if (KeyHit(SDLK_z))
+	{
+	    ofR += 1;
+	    ofR %= 4;
+	    if (rejim >= 28)
+		Render(buffer,rejim,WIDT,HIGH,DX);
+	}
+	
+	if (KeyHit(SDLK_x))
+	{
+	    ofG += 1;
+	    ofG %= 4;
+	    if (rejim >= 28)
+		Render(buffer,rejim,WIDT,HIGH,DX);
+	}
+	
+	if (KeyHit(SDLK_c))
+	{
+	    ofB += 1;
+	    ofB %= 4;
+	    if (rejim >= 28)
+		Render(buffer,rejim,WIDT,HIGH,DX);
+	}
+	
+	if (KeyHit(SDLK_v))
+	{
+	    ofA += 1;
+	    ofA %= 4;
+	    if (rejim >= 28)
+		Render(buffer,rejim,WIDT,HIGH,DX);
+	}
 
         if (KeyDown(SDLK_RIGHT))
         {
-            Offs++;
+            Offs += 1 + KeyDown(SDLK_RSHIFT) * 4;
             Render(buffer,rejim,WIDT,HIGH,DX);
         }
         if (KeyDown(SDLK_LEFT))
         {
-            Offs--;
+            Offs -= 1 + KeyDown(SDLK_RSHIFT) * 4;
             Render(buffer,rejim,WIDT,HIGH,DX);
         }
 
@@ -426,6 +535,39 @@ int main ( int argc, char** argv )
             if (KeyDown(SDLK_END))
             {
                 Offs+=WIDT*300;
+                Render(buffer,rejim,WIDT,HIGH,DX);
+            }
+        }
+	else if (rejim < 30)
+        {
+            if (KeyDown(SDLK_DOWN))
+            {
+                Offs+=WIDT*4;
+                Render(buffer,rejim,WIDT,HIGH,DX);
+            }
+            if (KeyDown(SDLK_UP))
+            {
+                Offs-=WIDT*4;
+                Render(buffer,rejim,WIDT,HIGH,DX);
+            }
+            if (KeyDown(SDLK_PAGEUP))
+            {
+                Offs-=WIDT*40;
+                Render(buffer,rejim,WIDT,HIGH,DX);
+            }
+            if (KeyDown(SDLK_PAGEDOWN))
+            {
+                Offs+=WIDT*40;
+                Render(buffer,rejim,WIDT,HIGH,DX);
+            }
+            if (KeyDown(SDLK_HOME))
+            {
+                Offs-=WIDT*400;
+                Render(buffer,rejim,WIDT,HIGH,DX);
+            }
+            if (KeyDown(SDLK_END))
+            {
+                Offs+=WIDT*400;
                 Render(buffer,rejim,WIDT,HIGH,DX);
             }
         }
@@ -763,5 +905,226 @@ void Render(SDL_Surface *srf,uint32_t rej,uint32_t wi,uint32_t hi, uint32_t dx)
                 ii++;
         }
         break;
+    
+    case 20: //32bit RGBA
+        ii=0;
+        while (ii<wi*hi)
+        {
+            if ((ii*4+4+off)>=Max)
+                break;
+            if ((ii % wi)< 150)
+            {
+                fseek(fl,ii*4+off,SEEK_SET);
+                fread(&tmp,4,1,fl);
+                tmp2= SDL_MapRGBA(srf->format, tmp & 0xFF, (tmp >> 8) & 0xFF, (tmp >> 16) & 0xFF, (tmp >> 24) & 0xFF);
+
+                jj= ii/wi;
+                if ((ii % wi)< 150)
+                    FillRect(srf,(ii % wi)*4,jj*4,4,4,tmp2);
+                ii++;
+            }
+            else
+                ii++;
+        }
+        break;
+    
+    case 21: //32bit BGRA
+        ii=0;
+        while (ii<wi*hi)
+        {
+            if ((ii*4+4+off)>=Max)
+                break;
+            if ((ii % wi)< 150)
+            {
+                fseek(fl,ii*4+off,SEEK_SET);
+                fread(&tmp,4,1,fl);
+                tmp2= SDL_MapRGBA(srf->format, (tmp >> 16) & 0xFF, (tmp >> 8) & 0xFF, tmp & 0xFF, (tmp >> 24) & 0xFF);
+
+                jj= ii/wi;
+                if ((ii % wi)< 150)
+                    FillRect(srf,(ii % wi)*4,jj*4,4,4,tmp2);
+                ii++;
+            }
+            else
+                ii++;
+        }
+        break;
+    
+    case 22: //32bit ARGB
+        ii=0;
+        while (ii<wi*hi)
+        {
+            if ((ii*4+4+off)>=Max)
+                break;
+            if ((ii % wi)< 150)
+            {
+                fseek(fl,ii*4+off,SEEK_SET);
+                fread(&tmp,4,1,fl);
+                tmp2= SDL_MapRGBA(srf->format, (tmp >> 8) & 0xFF, (tmp >> 16) & 0xFF, (tmp >> 24) & 0xFF, tmp & 0xFF);
+
+                jj= ii/wi;
+                if ((ii % wi)< 150)
+                    FillRect(srf,(ii % wi)*4,jj*4,4,4,tmp2);
+                ii++;
+            }
+            else
+                ii++;
+        }
+        break;
+    
+    case 23: //32bit ABGR
+        ii=0;
+        while (ii<wi*hi)
+        {
+            if ((ii*4+4+off)>=Max)
+                break;
+            if ((ii % wi)< 150)
+            {
+                fseek(fl,ii*4+off,SEEK_SET);
+                fread(&tmp,4,1,fl);
+                tmp2= SDL_MapRGBA(srf->format, (tmp >> 24) & 0xFF, (tmp >> 16) & 0xFF, (tmp >> 8) & 0xFF, tmp & 0xFF);
+
+                jj= ii/wi;
+                if ((ii % wi)< 150)
+                    FillRect(srf,(ii % wi)*4,jj*4,4,4,tmp2);
+                ii++;
+            }
+            else
+                ii++;
+        }
+        break;
+    
+    case 24: //32bit GRAB
+        ii=0;
+        while (ii<wi*hi)
+        {
+            if ((ii*4+4+off)>=Max)
+                break;
+            if ((ii % wi)< 150)
+            {
+                fseek(fl,ii*4+off,SEEK_SET);
+                fread(&tmp,4,1,fl);
+                tmp2= SDL_MapRGBA(srf->format, (tmp >> 8) & 0xFF, tmp & 0xFF, (tmp >> 24) & 0xFF, (tmp >> 16) & 0xFF);
+
+                jj= ii/wi;
+                if ((ii % wi)< 150)
+                    FillRect(srf,(ii % wi)*4,jj*4,4,4,tmp2);
+                ii++;
+            }
+            else
+                ii++;
+        }
+        break;
+    
+    case 25: //32bit GBAR
+        ii=0;
+        while (ii<wi*hi)
+        {
+            if ((ii*4+4+off)>=Max)
+                break;
+            if ((ii % wi)< 150)
+            {
+                fseek(fl,ii*4+off,SEEK_SET);
+                fread(&tmp,4,1,fl);
+                tmp2= SDL_MapRGBA(srf->format, (tmp >> 24) & 0xFF, tmp & 0xFF, (tmp >> 8) & 0xFF, (tmp >> 16) & 0xFF);
+
+                jj= ii/wi;
+                if ((ii % wi)< 150)
+                    FillRect(srf,(ii % wi)*4,jj*4,4,4,tmp2);
+                ii++;
+            }
+            else
+                ii++;
+        }
+        break;
+    
+    case 26: //32bit RABG
+        ii=0;
+        while (ii<wi*hi)
+        {
+            if ((ii*4+4+off)>=Max)
+                break;
+            if ((ii % wi)< 150)
+            {
+                fseek(fl,ii*4+off,SEEK_SET);
+                fread(&tmp,4,1,fl);
+                tmp2= SDL_MapRGBA(srf->format, tmp & 0xFF, (tmp >> 24) & 0xFF, (tmp >> 16) & 0xFF, (tmp >> 8) & 0xFF);
+
+                jj= ii/wi;
+                if ((ii % wi)< 150)
+                    FillRect(srf,(ii % wi)*4,jj*4,4,4,tmp2);
+                ii++;
+            }
+            else
+                ii++;
+        }
+        break;
+    
+    case 27: //32bit BARG
+        ii=0;
+        while (ii<wi*hi)
+        {
+            if ((ii*4+4+off)>=Max)
+                break;
+            if ((ii % wi)< 150)
+            {
+                fseek(fl,ii*4+off,SEEK_SET);
+                fread(&tmp,4,1,fl);
+                tmp2= SDL_MapRGBA(srf->format, (tmp >> 16) & 0xFF, (tmp >> 24) & 0xFF, tmp & 0xFF, (tmp >> 8) & 0xFF);
+
+                jj= ii/wi;
+                if ((ii % wi)< 150)
+                    FillRect(srf,(ii % wi)*4,jj*4,4,4,tmp2);
+                ii++;
+            }
+            else
+                ii++;
+        }
+        break;
+    
+    case 28: //32bit 
+        ii=0;
+        while (ii<wi*hi)
+        {
+            if ((ii*4+4+off)>=Max)
+                break;
+            if ((ii % wi)< 150)
+            {
+                fseek(fl,ii*4+off,SEEK_SET);
+                fread(&tmp,4,1,fl);
+                tmp2= SDL_MapRGBA(srf->format, (tmp >> (ofR * 8)) & 0xFF, (tmp >> (ofG * 8)) & 0xFF, (tmp >> (ofB * 8)) & 0xFF, (tmp >> (ofA * 8)) & 0xFF);
+
+                jj= ii/wi;
+                if ((ii % wi)< 150)
+                    FillRect(srf,(ii % wi)*4,jj*4,4,4,tmp2);
+                ii++;
+            }
+            else
+                ii++;
+        }
+        break;
+    
+    case 29: //32bit 
+        ii=0;
+        while (ii<wi*hi)
+        {
+            if ((ii*4+4+off)>=Max)
+                break;
+            if ((ii % wi)< 150)
+            {
+                fseek(fl,ii*4+off,SEEK_SET);
+                fread(&tmp,4,1,fl);
+                tmp2= SDL_MapRGBA(srf->format, (tmp >> (ofR * 10 + 2)) & 0xFF, (tmp >> (ofG * 10 + 2)) & 0xFF, (tmp >> (ofB * 10 + 2)) & 0xFF, (tmp >> (ofA * 10 + 2)) & 0xFF);
+
+                jj= ii/wi;
+                if ((ii % wi)< 150)
+                    FillRect(srf,(ii % wi)*4,jj*4,4,4,tmp2);
+                ii++;
+            }
+            else
+                ii++;
+        }
+        break;
+    
     }
 }

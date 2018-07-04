@@ -12,7 +12,7 @@ uint64_t millisec()
 }
 
 
-uint8_t KeyHits[512]; //Array with hitted keys (once per press)
+uint8_t KeyHits[1024]; //Array with hitted keys (once per press)
 bool AnyHit=false;    //it's indicate what any key was pressed
 uint8_t *Keys;        //Array with pressed keys (while pressed)
 
@@ -24,7 +24,7 @@ uint8_t Mstate;
 void FlushHits()
 {
     AnyHit=false;
-    memset(KeyHits,0,512);
+    memset(KeyHits,0,1024);
 }
 
 //Sets hit state for key
